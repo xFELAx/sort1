@@ -9,11 +9,10 @@
 #define MAX_VALUE 1000 // maksymalna wartosc jaka moze przyjac element tablicy
 
 // sortowanie przysto-nieparzyste
-void odd_even_sort(int *a, int n, int threadNumber)
+void odd_even_sort(int *a, int n)
 {
     int phase, i, temp;
 
-#pragma omp parallel num_threads(threadNumber) default(none) shared(a, n) private(i, temp, phase)
     {
         // iteracja po fazach
         for (phase = 0; phase < n; phase++)
@@ -21,7 +20,7 @@ void odd_even_sort(int *a, int n, int threadNumber)
             // faza parzysta
             if (phase % 2 == 0)
             {
-#pragma omp for
+
                 for (i = 1; i < n; i += 2)
                 {
                     if (a[i - 1] > a[i])
@@ -35,7 +34,6 @@ void odd_even_sort(int *a, int n, int threadNumber)
             // faza nieparzysta
             else
             {
-#pragma omp for
                 for (i = 1; i < n - 1; i += 2)
                 {
                     if (a[i] > a[i + 1])
@@ -89,14 +87,13 @@ void print_array(int *a, int size)
 
 int main(int argc, char **argv)
 {
-    if (argc != 3)
+    if (argc != 2)
     {
-        std::cout << "Error: Please provide the size of the array to sort and the number of threads to use" << std::endl;
+        std::cout << "Error: Please provide the size of the array to sort." << std::endl;
         return -1;
     }
     // konwersja argumentow string na int
     int size = std::atoi(argv[1]);
-    int threads = std::atoi(argv[2]);
     // stworzenie dynamicznych tablic
     int *a = new int[size];
     int *initial = new int[size];
@@ -104,17 +101,17 @@ int main(int argc, char **argv)
     generate_array(a, size);
     // skopiowanie tablicy a do tablicy initial
     std::memcpy(initial, a, size * sizeof(int));
-    printf("\nUnsorted array:\n");
-    print_array(a, size);
+    //printf("\nUnsorted array:\n");
+    //print_array(a, size);
 
     auto start = std::chrono::high_resolution_clock::now();
-    odd_even_sort(a, size, threads);
+    odd_even_sort(a, size);
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> diff = end - start;
     printf("\nTime: %f\n", diff.count());
 
-    printf("\nSorted array:\n");
-    print_array(a, size);
+    //printf("\nSorted array:\n");
+    //print_array(a, size);
     self_test(initial, a, size);
 
     delete[] a;

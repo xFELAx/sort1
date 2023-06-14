@@ -11,7 +11,7 @@
 // sortowanie przysto-nieparzyste na CUDA
 __global__ void odd_even_sort(int *a, int n)
 {
-    int phase, i, temp;
+    int phase, temp;
 
     // iteracja po fazach
     for (phase = 0; phase < n; phase++)
@@ -105,8 +105,8 @@ int main(int argc, char **argv)
     // skopiowanie tablicy 'a' do tablicy 'initial'
     std::memcpy(initial, a, size * sizeof(int));
 
-    printf("\nUnsorted array:\n");
-    print_array(a, size);
+    //printf("\nUnsorted array:\n");
+    //print_array(a, size);
 
     // Alokacja pamięci na GPU
     int *dev_a;
@@ -126,8 +126,8 @@ int main(int argc, char **argv)
     // Kopiowanie wyników z GPU do CPU
     cudaMemcpy(a, dev_a, size * sizeof(int), cudaMemcpyDeviceToHost);
 
-    printf("\nSorted array:\n");
-    print_array(a, size);
+    //printf("\nSorted array:\n");
+    //print_array(a, size);
     self_test(initial, a, size);
 
     // Zwolnienie pamięci na GPU
